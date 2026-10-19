@@ -1,0 +1,51 @@
+---
+- name: Deploy Student Academic Platform (Docker, safe defaults)
+  hosts: app
+  become: false
+  vars:
+    app_image: "student-academic-platform:v1.0.0"
+    app_port: 5000
+    app_container: "student-academic-platform"
+    app_data_dir: "/opt/sap/data"
+  tasks:
+    - name: Ensure app data directory exists
+      ansible.builtin.file:
+        path: "{{ app_data_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Pull application image (skipped if Docker unavailable)
+      community.docker.docker_image:
+        name: "{{ app_image }}"
+        source: pull
+      ignore_errors: true
+      when: lookup('env', 'SKIP_DOCKER_PULL') | default('', true) == ''
+
+    - name: Run application container
+      community.docker.docker_container:
+        name: "{{ app_container }}"
+        image: "{{ app_image }}"
+        state: started
+        restart_policy: unless-stopped
+        ports:
+          - "{{ app_port }}:5000"
+        volumes:
+          - "{{ app_data_dir }}:/app/data"
+        healthcheck:
+          test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/api/health')"]
+          interval: 30s
+          timeout: 5s
+          retries: 3
+      ignore_errors: true
+
+    - name: Verify health endpoint
+      ansible.builtin.uri:
+        url: "http://localhost:{{ app_port }}/api/health"
+        return_content: true
+        status_code: 200
+      register: health
+      failed_when: false
+
+    - name: Show health result
+      ansible.builtin.debug:
+        var: health

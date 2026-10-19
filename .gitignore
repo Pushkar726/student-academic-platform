@@ -1,0 +1,57 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Virtual environments
+.venv/
+.venv-ci/
+venv/
+ENV/
+env/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+reports/coverage_html/
+reports/junit.xml
+reports/coverage.xml
+reports/jenkins-test-results.xml
+.coverage
+
+# SQLite / local DB
+*.db
+*.sqlite
+*.sqlite3
+instance/
+data/
+*.log
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker / local overrides
+.env
+.env.local
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform/.terraform.lock.hcl
+
+# Ansible
+*.retry
+
+# Jenkins local
+.venv-ci/
