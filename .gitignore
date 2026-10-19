@@ -21,7 +21,6 @@ reports/coverage_html/
 reports/junit.xml
 reports/coverage.xml
 reports/jenkins-test-results.xml
-.coverage
 
 # SQLite / local DB
 *.db
